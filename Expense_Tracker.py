@@ -81,6 +81,18 @@ def update_total_amount():
     total_label.config(text=f'Total Amount: {total_amount_after:.2f} USD')
 
 
+def delete_selected_expense():
+    selected_item = table.selection()
+    if selected_item:
+        index = table.index(selected_item)
+        del expenses[index]
+        list_expenses()
+
+
+def clear_all_expenses():
+    expenses.clear()
+    list_expenses()
+
 
 dataentery_frame_bg = 'pale turquoise'
 buttons_frame_bg = 'lemon chiffon'
@@ -127,11 +139,17 @@ Label(data_entry_frame, text='Amount:', font=lbl_font, bg=dataentery_frame_bg).p
 Entry(data_entry_frame, font=entry_font, width=10, text=amnt).place(x=100, y=160)
 
 Label(data_entry_frame, text='Payment Method:', font=lbl_font, bg=dataentery_frame_bg).place(x=10, y=210)
-dd1 = OptionMenu(data_entry_frame, Mop, *['Cash', 'Credit Card', 'Paypal','Instapay'])
+dd1 = OptionMenu(data_entry_frame, Mop, *['Cash', 'Credit Card', 'Paypal','Instapay','Vodafon Cash'])
 dd1.place(x=160, y=210)     ;     dd1.configure(width=10, font=entry_font)
 
-Button(data_entry_frame, text='Add expense', command=add_another_expense, font=btn_font, width=25,
+Button(data_entry_frame, text='Add Expense', command=add_another_expense, font=btn_font, width=25,
     bg=hlb_btn_bg).place(x=50, y=280)
+
+Button(data_entry_frame, text='Delete Expense', command=delete_selected_expense, font=btn_font, width=25,
+    bg=hlb_btn_bg).place(x=50, y=320)
+
+Button(data_entry_frame, text='Delete All Expenses', command=clear_all_expenses, font=btn_font, width=25,
+    bg=hlb_btn_bg).place(x=50, y=360)
 
 table = ttk.Treeview(tree_frame, selectmode=BROWSE, columns=('Amount','Currency','Category','Payment Method'))
 
@@ -156,7 +174,6 @@ table.place(relx=0, y=1, relheight=0.8, relwidth=1)
 
 total_label = Label(tree_frame, text='Total Amount: ', font=lbl_font, bg=dataentery_frame_bg)
 total_label.place(relx=0.01, rely=0.85)
-
 
 list_all_expenses()
 
