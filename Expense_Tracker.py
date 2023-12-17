@@ -19,10 +19,18 @@ def convert_to_usd(amount, from_currency):
             data = response.json()
             usd_rate = data['rates']['USD']
             usd_amount = amount * usd_rate
-            return usd_amount
+
+            
+            if usd_amount is not None:
+                return usd_amount
+            else:
+                print("Error converting to USD: Conversion rate is not available.")
+                return None
+
         except requests.exceptions.RequestException as e:
             print(f"Error fetching currency conversion data: {e}")
             return None
+
 
 
 def list_all_expenses():
@@ -94,6 +102,16 @@ def clear_all_expenses():
     list_expenses()
 
 
+def sort_expenses_by_price():
+    expenses.sort(key=lambda expense: expense['amount_before'], reverse=True)
+    list_expenses()
+
+def sort_expenses_by_price_low_to_high():
+    expenses.sort(key=lambda expense: expense['amount_before'])
+    list_expenses()
+
+
+
 dataentery_frame_bg = 'pale turquoise'
 buttons_frame_bg = 'lemon chiffon'
 hlb_btn_bg = 'snow'
@@ -104,7 +122,7 @@ btn_font = ('Franklin Gothic', 10)
 
 root = Tk()
 root.title('EXPENSE TRACKER')
-root.geometry('1200x500')
+root.geometry('1200x600')
 root.resizable(0, 0)
 
 
@@ -132,15 +150,15 @@ Label(data_entry_frame, text='Category:', font=lbl_font, bg=dataentery_frame_bg)
 Entry(data_entry_frame, font=entry_font, width=20, text=cate).place(x=100, y=60)
 
 Label(data_entry_frame, text='Currency:', font=lbl_font, bg=dataentery_frame_bg).place(x=10, y=110)
-dd2 = OptionMenu(data_entry_frame, curr, *['USD','EGP','EUR','AUD','BRL','GBP','XCD','XOF','NZD','XAF','ZAR','XPF','RUB','DKK','JOD','TRY','CAD'])
-dd2.place(x=100, y=110)     ;     dd2.configure(width=10, font=entry_font)
+dd1 = OptionMenu(data_entry_frame, curr, *['USD','EGP','EUR','AUD','BRL','GBP','XCD','XOF','NZD','XAF','ZAR','XPF','RUB','DKK','JOD','TRY','CAD'])
+dd1.place(x=100, y=110)     ;     dd1.configure(width=10, font=entry_font)
 
 Label(data_entry_frame, text='Amount:', font=lbl_font, bg=dataentery_frame_bg).place(x=10, y=160)
 Entry(data_entry_frame, font=entry_font, width=10, text=amnt).place(x=100, y=160)
 
 Label(data_entry_frame, text='Payment Method:', font=lbl_font, bg=dataentery_frame_bg).place(x=10, y=210)
-dd1 = OptionMenu(data_entry_frame, Mop, *['Cash', 'Credit Card', 'Paypal','Instapay','Vodafon Cash'])
-dd1.place(x=160, y=210)     ;     dd1.configure(width=10, font=entry_font)
+dd2 = OptionMenu(data_entry_frame, Mop, *['Cash', 'Credit Card', 'Paypal','Instapay','Vodafon Cash'])
+dd2.place(x=160, y=210)     ;     dd2.configure(width=10, font=entry_font)
 
 Button(data_entry_frame, text='Add Expense', command=add_another_expense, font=btn_font, width=25,
     bg=hlb_btn_bg).place(x=50, y=280)
@@ -150,6 +168,13 @@ Button(data_entry_frame, text='Delete Expense', command=delete_selected_expense,
 
 Button(data_entry_frame, text='Delete All Expenses', command=clear_all_expenses, font=btn_font, width=25,
     bg=hlb_btn_bg).place(x=50, y=360)
+
+Button(data_entry_frame, text='Sort by Price (High to Low)', command=sort_expenses_by_price, font=btn_font, width=25,
+    bg=hlb_btn_bg).place(x=50, y=400)
+
+Button(data_entry_frame, text='Sort by Price (Low to High)', command=sort_expenses_by_price_low_to_high, font=btn_font, width=25,
+    bg=hlb_btn_bg).place(x=50, y=440)
+
 
 table = ttk.Treeview(tree_frame, selectmode=BROWSE, columns=('Amount','Currency','Category','Payment Method'))
 
